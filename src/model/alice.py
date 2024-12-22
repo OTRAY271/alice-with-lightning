@@ -21,7 +21,7 @@ class ALICE(nn.Module):
             self.enc.latent_dim
             == self.dec.latent_dim
             == self.dis.latent_dim
-            == self.ccdis
+            == self.ccdis.latent_dim
         )
         self.latent_dim = self.enc.latent_dim
 
