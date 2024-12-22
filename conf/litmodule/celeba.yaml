@@ -1,0 +1,10 @@
+_target_: litmodule.LitALI
+
+ali:
+  _target_: model.ALI
+  enc:
+    _target_: model.encoder.CelebAEncoder
+  dec:
+    _target_: model.decoder.CelebADecoder
+  dis:
+    _target_: model.discriminator.CelebADiscriminator

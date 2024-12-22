@@ -1,0 +1,5 @@
+_target_: datamodule.MNISTDataModule
+
+data_dir: ~/datasets
+batch_size: 256
+num_workers: 14

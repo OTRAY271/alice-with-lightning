@@ -1,0 +1,5 @@
+_target_: datamodule.CIFAR10DataModule
+
+data_dir: ~/datasets
+batch_size: 100
+num_workers: 14

@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "alice-with-lightning"
+version = "0.1.0"
+description = ""
+authors = ["OTRAY271 <mojayarto.ai@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+torch = {version = "^2.4.1+cu124", source = "torch_cu124"}
+torchvision = {version = "^0.19.1+cu124", source = "torch_cu124"}
+torchaudio = {version = "^2.4.1+cu124", source = "torch_cu124"}
+lightning = "^2.4.0"
+hydra-core = "^1.3.2"
+scikit-learn = "^1.5.2"
+wandb = "^0.18.2"
+matplotlib = "^3.9.2"
+fire = "^0.7.0"
+gdown = "^5.2.0"
+
+
+[[tool.poetry.source]]
+name = "torch_cu124"
+url = "https://download.pytorch.org/whl/cu124"
+priority = "explicit"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

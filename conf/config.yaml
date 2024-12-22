@@ -1,0 +1,8 @@
+defaults:
+  - _self_
+  - experiment: cifar10
+
+project_name: alice-with-lightning
+seed: 42
+float32_matmul_precision: high
+ckpt: null
