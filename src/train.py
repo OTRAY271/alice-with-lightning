@@ -20,7 +20,7 @@ def train(cfg: DictConfig) -> None:
 
     wandb_logger = WandbLogger(
         project=cfg.project_name,
-        name=f"{cfg.run_prefix}_{str(run_dir).replace("/", "_")}",
+        name=f"{cfg.run_prefix}-{str(run_dir).replace("/", "-")}",
         tags=[cfg.run_prefix],
     )
     wandb_logger.experiment.config.update(

@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - experiment: cifar10
+  - experiment: alice/mnist
 
 project_name: alice-with-lightning
 seed: 42

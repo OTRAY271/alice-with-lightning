@@ -1,7 +1,7 @@
 # @package _global_
 defaults:
   - /datamodule: celeba
-  - /litmodule: celeba
+  - /litmodule: ali/celeba
   - /trainer: celeba
 
-run_prefix: celeba
+run_prefix: celeba-ali

@@ -1,0 +1,12 @@
+_target_: litmodule.LitALI
+
+alice:
+  _target_: model.ALICE
+  enc:
+    _target_: model.encoder.MNISTEncoder
+  dec:
+    _target_: model.decoder.MNISTDecoder
+  dis:
+    _target_: model.discriminator.MNISTDiscriminator
+  ccdis:
+    _target_: model.cc_discriminator.MNISTCCDiscriminator
