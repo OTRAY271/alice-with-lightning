@@ -72,6 +72,8 @@ class MNISTCCDiscriminator(BaseCCDiscriminator):
 
 class MNISTCCDiscriminator2(BaseCCDiscriminator):
     def __init__(self):
+        super().__init__(None, None)
+
         self.layers = nn.Sequential(
             self._double_conv_block(2, 16),
             self._double_conv_block(16, 32, second_padding=2),
@@ -79,8 +81,6 @@ class MNISTCCDiscriminator2(BaseCCDiscriminator):
             self._conv_block(64, 50, kernel_size=4, stride=1),
             nn.Conv2d(50, 1, kernel_size=1, stride=1),
         )
-
-        super().__init__(None, None)
 
     def forward(self, x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
         x = torch.cat([x1, x2], dim=1)
