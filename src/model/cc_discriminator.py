@@ -7,12 +7,10 @@ class BaseCCDiscriminator(nn.Module):
         self,
         x_layers: nn.Module,
         xx_layers: nn.Module,
-        latent_dim: int = 64,
     ):
         super().__init__()
 
         self.x_layers, self.xx_layers = x_layers, xx_layers
-        self.latent_dim = latent_dim
 
     def forward(self, x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
         h_x1 = self.x_layers(x1)
@@ -42,23 +40,23 @@ class BaseCCDiscriminator(nn.Module):
 
 
 class MNISTCCDiscriminator(BaseCCDiscriminator):
-    def __init__(self, latent_dim: int = 64):
+    def __init__(self):
         x_layers = nn.Sequential(
-            self._conv_block(1, 32, kernel_size=4, stride=2, dropout=0.2),
-            self._conv_block(32, 64, kernel_size=4, stride=1),
-            self._conv_block(64, 128, kernel_size=4, stride=2),
-            self._conv_block(128, 256, kernel_size=4, stride=1),
-            self._conv_block(256, 512, kernel_size=1, stride=1),
+            self._conv_block(1, 16, kernel_size=4, stride=2, dropout=0.2),
+            self._conv_block(16, 32, kernel_size=4, stride=1),
+            self._conv_block(32, 64, kernel_size=4, stride=2),
+            self._conv_block(64, 128, kernel_size=4, stride=1),
+            self._conv_block(128, 256, kernel_size=1, stride=1),
         )
 
         xx_layers = nn.Sequential(
-            self._conv_block(1024, 1024, kernel_size=1, stride=1),
-            self._conv_block(1024, 1024, kernel_size=1, stride=1),
-            nn.Conv2d(1024, 1, kernel_size=1, stride=1),
+            self._conv_block(512, 512, kernel_size=1, stride=1),
+            self._conv_block(512, 512, kernel_size=1, stride=1),
+            nn.Conv2d(512, 1, kernel_size=1, stride=1),
             nn.Dropout(0.5),
         )
 
-        super().__init__(x_layers, xx_layers, latent_dim)
+        super().__init__(x_layers, xx_layers)
 
     def _conv_block(
         self,

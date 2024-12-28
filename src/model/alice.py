@@ -17,12 +17,7 @@ class ALICE(nn.Module):
         super().__init__()
         self.enc, self.dec, self.dis, self.ccdis = enc, dec, dis, ccdis
 
-        assert (
-            self.enc.latent_dim
-            == self.dec.latent_dim
-            == self.dis.latent_dim
-            == self.ccdis.latent_dim
-        )
+        assert self.enc.latent_dim == self.dec.latent_dim == self.dis.latent_dim
         self.latent_dim = self.enc.latent_dim
 
         self.enc.apply(self._weights_init)
