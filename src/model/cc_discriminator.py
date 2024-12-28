@@ -53,7 +53,6 @@ class MNISTCCDiscriminator(BaseCCDiscriminator):
             self._conv_block(512, 512, kernel_size=1, stride=1),
             self._conv_block(512, 512, kernel_size=1, stride=1),
             nn.Conv2d(512, 1, kernel_size=1, stride=1),
-            nn.Dropout(0.5),
         )
 
         super().__init__(x_layers, xx_layers)
