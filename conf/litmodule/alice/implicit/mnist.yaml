@@ -9,4 +9,4 @@ alice:
   dis:
     _target_: model.discriminator.MNISTDiscriminator
   ccdis:
-    _target_: model.cc_discriminator.MNISTCCDiscriminator
+    _target_: model.cc_discriminator.MNISTCCDiscriminator2
