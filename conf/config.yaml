@@ -1,6 +1,6 @@
 defaults:
   - _self_
-  - experiment: alice/mnist
+  - experiment: alice/implicit/mnist
 
 project_name: alice-with-lightning
 seed: 42

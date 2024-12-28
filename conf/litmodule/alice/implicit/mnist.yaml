@@ -1,4 +1,4 @@
-_target_: litmodule.LitALICE
+_target_: litmodule.LitImplicitALICE
 
 alice:
   _target_: model.ALICE

@@ -1,0 +1,7 @@
+# @package _global_
+defaults:
+  - /datamodule: mnist
+  - /litmodule: alice/implicit/mnist
+  - /trainer: mnist
+
+run_prefix: mnist-implicit-alice

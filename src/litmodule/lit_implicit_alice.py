@@ -2,13 +2,13 @@ import lightning as L
 import torch
 import torch.nn.functional as F
 import torchvision
-import wandb
 from torch import nn, optim
 
+import wandb
 from model import ALICE
 
 
-class LitALICE(L.LightningModule):
+class LitImplicitALICE(L.LightningModule):
     def __init__(self, alice: ALICE, lr: float = 1e-4):
         super().__init__()
 
