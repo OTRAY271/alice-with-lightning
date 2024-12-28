@@ -69,3 +69,57 @@ class MNISTCCDiscriminator(BaseCCDiscriminator):
         return super()._conv_block(
             in_channels, out_channels, kernel_size, stride, dropout, 0.1
         )
+
+
+class MNISTCCDiscriminator2(BaseCCDiscriminator):
+    def __init__(self):
+        self.layers = nn.Sequential(
+            self._double_conv_block(2, 16),
+            self._double_conv_block(16, 32, second_padding=2),
+            self._double_conv_block(32, 64),
+            self._conv_block(64, 50, kernel_size=4, stride=1),
+            nn.Conv2d(50, 1, kernel_size=1, stride=1),
+        )
+
+        super().__init__(None, None)
+
+    def forward(self, x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
+        x = torch.cat([x1, x2], dim=1)
+        return self.layers(x).view(-1, 1)
+
+    def _double_conv_block(
+        self,
+        in_channels: int,
+        out_channels: int,
+        first_padding: int = 1,
+        second_padding: int = 1,
+    ) -> nn.Module:
+        return nn.Sequential(
+            nn.Conv2d(
+                in_channels,
+                out_channels,
+                kernel_size=3,
+                padding=first_padding,
+            ),
+            nn.ReLU(),
+            nn.Conv2d(
+                out_channels,
+                out_channels,
+                kernel_size=3,
+                padding=second_padding,
+            ),
+            nn.ReLU(),
+            nn.MaxPool2d(2, stride=2),
+        )
+
+    def _conv_block(
+        self,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: int,
+        stride: int,
+        dropout: float = 0.5,
+    ) -> nn.Module:
+        return super()._conv_block(
+            in_channels, out_channels, kernel_size, stride, dropout, 0.1
+        )
