@@ -92,6 +92,7 @@ class MNISTCCDiscriminator2(BaseCCDiscriminator):
         out_channels: int,
         first_padding: int = 1,
         second_padding: int = 1,
+        lrelu_slope: float = 0.1,
     ) -> nn.Module:
         return nn.Sequential(
             nn.Conv2d(
@@ -100,15 +101,20 @@ class MNISTCCDiscriminator2(BaseCCDiscriminator):
                 kernel_size=3,
                 padding=first_padding,
             ),
-            nn.ReLU(),
+            nn.LeakyReLU(lrelu_slope),
             nn.Conv2d(
                 out_channels,
                 out_channels,
                 kernel_size=3,
                 padding=second_padding,
             ),
-            nn.ReLU(),
-            nn.MaxPool2d(2, stride=2),
+            nn.LeakyReLU(lrelu_slope),
+            nn.Conv2d(
+                out_channels,
+                out_channels,
+                kernel_size=2,
+                stride=2,
+            ),
         )
 
     def _conv_block(
