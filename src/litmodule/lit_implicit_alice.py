@@ -9,11 +9,12 @@ from model import ALICE
 
 
 class LitImplicitALICE(L.LightningModule):
-    def __init__(self, alice: ALICE, lr: float = 1e-4):
+    def __init__(self, alice: ALICE, lr: float = 1e-4, cc_loss_weight: float = 0.5):
         super().__init__()
 
         self.alice = alice
         self.lr = lr
+        self.cc_loss_weight = cc_loss_weight
         self.criterion = nn.BCEWithLogitsLoss()
 
         self.z_val = torch.randn(64, self.alice.latent_dim, 1, 1)
@@ -44,12 +45,12 @@ class LitImplicitALICE(L.LightningModule):
         pred_cc_real = self.alice.ccdis(x, x)
         pred_cc_fake = self.alice.ccdis(x, x_recon.detach())
 
-        loss_dis_real = self.criterion(pred_real, label_real) + self.criterion(
-            pred_cc_real, label_real
-        )
-        loss_dis_fake = self.criterion(pred_fake, label_fake) + self.criterion(
-            pred_cc_fake, label_fake
-        )
+        loss_dis_real = self.criterion(
+            pred_real, label_real
+        ) + self.cc_loss_weight * self.criterion(pred_cc_real, label_real)
+        loss_dis_fake = self.criterion(
+            pred_fake, label_fake
+        ) + self.cc_loss_weight * self.criterion(pred_cc_fake, label_fake)
         loss_dis = loss_dis_real + loss_dis_fake
 
         self.alice.dis.zero_grad()
@@ -62,12 +63,12 @@ class LitImplicitALICE(L.LightningModule):
         pred_cc_real = self.alice.ccdis(x, x)
         pred_cc_fake = self.alice.ccdis(x, x_recon)
 
-        loss_gen_real = self.criterion(pred_fake, label_real) + self.criterion(
-            pred_cc_fake, label_real
-        )
-        loss_gen_fake = self.criterion(pred_real, label_fake) + self.criterion(
-            pred_cc_real, label_fake
-        )
+        loss_gen_real = self.criterion(
+            pred_fake, label_real
+        ) + self.cc_loss_weight * self.criterion(pred_cc_fake, label_real)
+        loss_gen_fake = self.criterion(
+            pred_real, label_fake
+        ) + self.cc_loss_weight * self.criterion(pred_cc_real, label_fake)
         loss_gen = loss_gen_real + loss_gen_fake
 
         self.alice.enc.zero_grad()
