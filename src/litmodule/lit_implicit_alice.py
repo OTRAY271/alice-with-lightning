@@ -9,7 +9,7 @@ from model import ALICE
 
 
 class LitImplicitALICE(L.LightningModule):
-    def __init__(self, alice: ALICE, lr: float = 1e-4, cc_loss_weight: float = 0.5):
+    def __init__(self, alice: ALICE, lr: float = 1e-4, cc_loss_weight: float = 1.0):
         super().__init__()
 
         self.alice = alice
@@ -36,39 +36,49 @@ class LitImplicitALICE(L.LightningModule):
         z_fake = self.alice.enc(x)
         x_fake = self.alice.dec(z)
         x_recon = self.alice.dec(z_fake)
+        z_recon = self.alice.enc(x_fake)
 
         label_real = torch.ones(batch_size, 1, device=self.device)
         label_fake = torch.zeros(batch_size, 1, device=self.device)
 
         pred_real = self.alice.dis(x, z_fake.detach())
         pred_fake = self.alice.dis(x_fake.detach(), z)
-        pred_cc_real = self.alice.ccdis(x, x)
-        pred_cc_fake = self.alice.ccdis(x, x_recon.detach())
+        pred_cc_real_x = self.alice.ccdis_x(x, x)
+        pred_cc_fake_x = self.alice.ccdis_x(x, x_recon.detach())
+        pred_cc_real_z = self.alice.ccdis_z(z, z)
+        pred_cc_fake_z = self.alice.ccdis_z(z, z_recon.detach())
 
-        loss_dis_real = self.criterion(
-            pred_real, label_real
-        ) + self.cc_loss_weight * self.criterion(pred_cc_real, label_real)
-        loss_dis_fake = self.criterion(
-            pred_fake, label_fake
-        ) + self.cc_loss_weight * self.criterion(pred_cc_fake, label_fake)
+        loss_dis_real = self.criterion(pred_real, label_real) + self.cc_loss_weight * (
+            self.criterion(pred_cc_real_x, label_real) * 0.5
+            + self.criterion(pred_cc_real_z, label_real) * 0.5
+        )
+        loss_dis_fake = self.criterion(pred_fake, label_fake) + self.cc_loss_weight * (
+            self.criterion(pred_cc_fake_x, label_fake) * 0.5
+            + self.criterion(pred_cc_fake_z, label_fake) * 0.5
+        )
         loss_dis = loss_dis_real + loss_dis_fake
 
         self.alice.dis.zero_grad()
-        self.alice.ccdis.zero_grad()
+        self.alice.ccdis_x.zero_grad()
+        self.alice.ccdis_z.zero_grad()
         self.manual_backward(loss_dis)
         dis_opt.step()
 
         pred_real = self.alice.dis(x, z_fake)
         pred_fake = self.alice.dis(x_fake, z)
-        pred_cc_real = self.alice.ccdis(x, x)
-        pred_cc_fake = self.alice.ccdis(x, x_recon)
+        pred_cc_real_x = self.alice.ccdis_x(x, x)
+        pred_cc_fake_x = self.alice.ccdis_x(x, x_recon.detach())
+        pred_cc_real_z = self.alice.ccdis_z(z, z)
+        pred_cc_fake_z = self.alice.ccdis_z(z, z_recon.detach())
 
-        loss_gen_real = self.criterion(
-            pred_fake, label_real
-        ) + self.cc_loss_weight * self.criterion(pred_cc_fake, label_real)
-        loss_gen_fake = self.criterion(
-            pred_real, label_fake
-        ) + self.cc_loss_weight * self.criterion(pred_cc_real, label_fake)
+        loss_gen_real = self.criterion(pred_fake, label_real) + self.cc_loss_weight * (
+            self.criterion(pred_cc_fake_x, label_real) * 0.5
+            + self.criterion(pred_cc_fake_z, label_real) * 0.5
+        )
+        loss_gen_fake = self.criterion(pred_real, label_fake) + self.cc_loss_weight * (
+            self.criterion(pred_cc_real_x, label_fake) * 0.5
+            + self.criterion(pred_cc_real_z, label_fake) * 0.5
+        )
         loss_gen = loss_gen_real + loss_gen_fake
 
         self.alice.enc.zero_grad()
@@ -129,7 +139,9 @@ class LitImplicitALICE(L.LightningModule):
             betas=(0.5, 1 - 1e-3),
         )
         dis_opt = optim.Adam(
-            list(self.alice.dis.parameters()) + list(self.alice.ccdis.parameters()),
+            list(self.alice.dis.parameters())
+            + list(self.alice.ccdis_x.parameters())
+            + list(self.alice.ccdis_z.parameters()),
             lr=self.lr,
             betas=(0.5, 1 - 1e-3),
         )

@@ -8,5 +8,7 @@ alice:
     _target_: model.decoder.MNISTDecoder
   dis:
     _target_: model.discriminator.MNISTDiscriminator
-  ccdis:
-    _target_: model.cc_discriminator.MNISTCCDiscriminator
+  ccdis_x:
+    _target_: model.cc_discriminator.MNISTCCDiscriminatorX
+  ccdis_z:
+    _target_: model.cc_discriminator.MNISTCCDiscriminatorZ

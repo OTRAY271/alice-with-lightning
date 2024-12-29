@@ -12,10 +12,17 @@ class ALICE(nn.Module):
         enc: BaseEncoder,
         dec: BaseDecoder,
         dis: BaseDiscriminator,
-        ccdis: BaseCCDiscriminator,
+        ccdis_x: BaseCCDiscriminator,
+        ccdis_z: BaseCCDiscriminator,
     ):
         super().__init__()
-        self.enc, self.dec, self.dis, self.ccdis = enc, dec, dis, ccdis
+        self.enc, self.dec, self.dis, self.ccdis_x, self.ccdis_z = (
+            enc,
+            dec,
+            dis,
+            ccdis_x,
+            ccdis_z,
+        )
 
         assert self.enc.latent_dim == self.dec.latent_dim == self.dis.latent_dim
         self.latent_dim = self.enc.latent_dim
@@ -23,7 +30,8 @@ class ALICE(nn.Module):
         self.enc.apply(self._weights_init)
         self.dec.apply(self._weights_init)
         self.dis.apply(self._weights_init)
-        self.ccdis.apply(self._weights_init)
+        self.ccdis_x.apply(self._weights_init)
+        self.ccdis_z.apply(self._weights_init)
 
     def _weights_init(self, m: nn.Module) -> None:
         classname = m.__class__.__name__
