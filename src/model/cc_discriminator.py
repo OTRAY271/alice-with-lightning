@@ -3,20 +3,14 @@ from torch import nn
 
 
 class BaseCCDiscriminator(nn.Module):
-    def __init__(
-        self,
-        x_layers: nn.Module,
-        xx_layers: nn.Module,
-    ):
+    def __init__(self, layers: nn.Module):
         super().__init__()
 
-        self.x_layers, self.xx_layers = x_layers, xx_layers
+        self.layers = layers
 
     def forward(self, x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
-        h_x1 = self.x_layers(x1)
-        h_x2 = self.x_layers(x2)
-        h_xx = torch.cat([h_x1, h_x2], dim=1)
-        return self.xx_layers(h_xx).view(-1, 1)
+        x = torch.cat([x1, x2], dim=1)
+        return self.layers(x).view(-1, 1)
 
     def _conv_block(
         self,
@@ -41,9 +35,7 @@ class BaseCCDiscriminator(nn.Module):
 
 class MNISTCCDiscriminator(BaseCCDiscriminator):
     def __init__(self):
-        super().__init__(None, None)
-
-        self.layers = nn.Sequential(
+        layers = nn.Sequential(
             self._double_conv_block(2, 16),
             self._double_conv_block(16, 32, second_padding=2),
             self._double_conv_block(32, 64),
@@ -51,9 +43,7 @@ class MNISTCCDiscriminator(BaseCCDiscriminator):
             nn.Conv2d(50, 1, kernel_size=1, stride=1),
         )
 
-    def forward(self, x1: torch.Tensor, x2: torch.Tensor) -> torch.Tensor:
-        x = torch.cat([x1, x2], dim=1)
-        return self.layers(x).view(-1, 1)
+        super().__init__(layers)
 
     def _double_conv_block(
         self,
