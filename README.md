@@ -2,7 +2,7 @@
 
 PyTorch Lightning + Hydra + WandB
 
-Unofficial implementation of unsupervised [Adversarially Learned Inference](https://arxiv.org/abs/1606.00704) (ALI)
+Unofficial implementation of unsupervised [Adversarially Learned Inference with Conditional Entropy](https://arxiv.org/abs/1709.01215) (ALICE)
 
 ## Setup
 
@@ -14,39 +14,33 @@ poetry run wandb login
 ## Usage
 
 ```bash
-poetry run python src/train.py experiment={cifar10|celeba|mnist}
+# explicit ALICE
+poetry run python src/train.py experiment=alice/explicit/mnist
+
+# implicit ALICE
+poetry run python src/train.py experiment=alice/implicit/mnist
 ```
 
 ## Results
 
-### CIFAR-10 (6475 epochs)
+### MNIST (200 epochs, explicit)
 
 samples:\
-![samples](https://github.com/user-attachments/assets/a56dedc5-2c10-4e57-b249-0d1f1226c696)
+![samples](https://github.com/user-attachments/assets/ce33d27e-8d5a-432d-99bc-2314eb809345)
 
 reconstructions:\
-![reconstructions](https://github.com/user-attachments/assets/23015d08-d43c-4f8e-8e47-55ef5494d882)
+![reconstructions](https://github.com/user-attachments/assets/e08a39fa-065f-41fa-9c47-339fb2101ab4)
 
 
-### CelebA (123 epochs)
+### MNIST (200 epochs, implicit)
 
 samples:\
-![samples](https://github.com/user-attachments/assets/405030cd-a59c-44b6-aa31-94b4f1ad77ea)
-
-
-reconstructions:\
-![reconstructions](https://github.com/user-attachments/assets/6b1cb750-dde4-44a1-9fb6-bdff39bf88d6)
-
-
-### MNIST (100 epochs)
-
-samples:\
-![samples](https://github.com/user-attachments/assets/b7c4cb63-3901-4435-9b76-310d06dd71dd)
+![samples](https://github.com/user-attachments/assets/23fa89c3-5c06-49a2-bc02-a75f331accc8)
 
 reconstructions:\
-![reconstructions](https://github.com/user-attachments/assets/4dad7157-e32e-4e03-8ac8-2e52712be2e5)
+![reconstructions](https://github.com/user-attachments/assets/e22b5045-c1a2-4388-9c6d-b3d25134c826)
 
 
 ## Reference
 
-Dumoulin, V., Belghazi, I., Poole, B., Mastropietro, O., Lamb, A., Arjovsky, M., & Courville, A. (2016). Adversarially learned inference. arXiv preprint arXiv:1606.00704.
+Li, C., Liu, H., Chen, C., Pu, Y., Chen, L., Henao, R., & Carin, L. (2017). Alice: Towards understanding adversarial learning for joint distribution matching. Advances in neural information processing systems, 30.
